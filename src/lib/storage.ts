@@ -4,11 +4,11 @@
  */
 
 // Storage types
-type StorageType = 'local' | 'session';
+type StorageType = "local" | "session";
 
 // Get storage object based on type
 function getStorage(type: StorageType): Storage {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     // Server-side rendering fallback
     return {
       getItem: () => null,
@@ -19,8 +19,8 @@ function getStorage(type: StorageType): Storage {
       length: 0,
     };
   }
-  
-  return type === 'local' ? window.localStorage : window.sessionStorage;
+
+  return type === "local" ? window.localStorage : window.sessionStorage;
 }
 
 /**
@@ -33,7 +33,7 @@ function getStorage(type: StorageType): Storage {
 export function setItem(
   key: string,
   value: any,
-  type: StorageType = 'local'
+  type: StorageType = "local"
 ): boolean {
   try {
     const storage = getStorage(type);
@@ -56,16 +56,16 @@ export function setItem(
 export function getItem<T>(
   key: string,
   defaultValue: T | null = null,
-  type: StorageType = 'local'
+  type: StorageType = "local"
 ): T | null {
   try {
     const storage = getStorage(type);
     const value = storage.getItem(key);
-    
+
     if (value === null) {
       return defaultValue;
     }
-    
+
     return JSON.parse(value) as T;
   } catch (error) {
     console.error(`Error getting ${type} storage item:`, error);
@@ -79,7 +79,7 @@ export function getItem<T>(
  * @param type - Storage type (default: 'local')
  * @returns Boolean indicating success
  */
-export function removeItem(key: string, type: StorageType = 'local'): boolean {
+export function removeItem(key: string, type: StorageType = "local"): boolean {
   try {
     const storage = getStorage(type);
     storage.removeItem(key);
@@ -95,7 +95,7 @@ export function removeItem(key: string, type: StorageType = 'local'): boolean {
  * @param type - Storage type (default: 'local')
  * @returns Boolean indicating success
  */
-export function clearStorage(type: StorageType = 'local'): boolean {
+export function clearStorage(type: StorageType = "local"): boolean {
   try {
     const storage = getStorage(type);
     storage.clear();
@@ -111,20 +111,21 @@ export function clearStorage(type: StorageType = 'local'): boolean {
  * @param type - Storage type (default: 'local')
  * @returns Boolean indicating if storage is available
  */
-export function isStorageAvailable(type: StorageType = 'local'): boolean {
-  if (typeof window === 'undefined') {
+export function isStorageAvailable(type: StorageType = "local"): boolean {
+  if (typeof window === "undefined") {
     return false;
   }
-  
+
   try {
     const storage = getStorage(type);
-    const testKey = '__storage_test__';
-    
-    storage.setItem(testKey, 'test');
+    const testKey = "__storage_test__";
+
+    storage.setItem(testKey, "test");
     storage.removeItem(testKey);
-    
+
     return true;
   } catch (error) {
+    console.error(`Error checking ${type} storage availability:`, error);
     return false;
   }
 }
@@ -137,16 +138,18 @@ const storage = {
   clear: clearStorage,
   isAvailable: isStorageAvailable,
   local: {
-    set: (key: string, value: any) => setItem(key, value, 'local'),
-    get: <T>(key: string, defaultValue?: T | null) => getItem<T>(key, defaultValue, 'local'),
-    remove: (key: string) => removeItem(key, 'local'),
-    clear: () => clearStorage('local'),
+    set: (key: string, value: any) => setItem(key, value, "local"),
+    get: <T>(key: string, defaultValue?: T | null) =>
+      getItem<T>(key, defaultValue, "local"),
+    remove: (key: string) => removeItem(key, "local"),
+    clear: () => clearStorage("local"),
   },
   session: {
-    set: (key: string, value: any) => setItem(key, value, 'session'),
-    get: <T>(key: string, defaultValue?: T | null) => getItem<T>(key, defaultValue, 'session'),
-    remove: (key: string) => removeItem(key, 'session'),
-    clear: () => clearStorage('session'),
+    set: (key: string, value: any) => setItem(key, value, "session"),
+    get: <T>(key: string, defaultValue?: T | null) =>
+      getItem<T>(key, defaultValue, "session"),
+    remove: (key: string) => removeItem(key, "session"),
+    clear: () => clearStorage("session"),
   },
 };
 

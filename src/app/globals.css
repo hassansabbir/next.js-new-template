@@ -14,9 +14,8 @@
   --border: #e2e8f0;
   --input: #e2e8f0;
   --ring: #3b82f6;
-}
-
-@theme inline {
+  
+  /* Theme variables */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);

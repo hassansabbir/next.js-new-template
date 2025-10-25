@@ -5,9 +5,9 @@
 
 // Default API configuration
 const API_CONFIG = {
-  baseUrl: process.env.NEXT_PUBLIC_API_URL || '/api',
+  baseUrl: process.env.NEXT_PUBLIC_API_URL || "/api",
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
   timeout: 30000, // 30 seconds
 };
@@ -19,7 +19,7 @@ export class ApiError extends Error {
 
   constructor(message: string, status: number, data?: any) {
     super(message);
-    this.name = 'ApiError';
+    this.name = "ApiError";
     this.status = status;
     this.data = data;
   }
@@ -28,7 +28,7 @@ export class ApiError extends Error {
 // Timeout promise
 const timeoutPromise = (ms: number) =>
   new Promise((_, reject) =>
-    setTimeout(() => reject(new ApiError('Request timeout', 408)), ms)
+    setTimeout(() => reject(new ApiError("Request timeout", 408)), ms)
   );
 
 /**
@@ -41,9 +41,11 @@ export async function apiRequest<T = any>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> {
-  const url = endpoint.startsWith('http')
+  const url = endpoint.startsWith("http")
     ? endpoint
-    : `${API_CONFIG.baseUrl}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+    : `${API_CONFIG.baseUrl}${
+        endpoint.startsWith("/") ? endpoint : `/${endpoint}`
+      }`;
 
   const headers = {
     ...API_CONFIG.headers,
@@ -57,10 +59,10 @@ export async function apiRequest<T = any>(
 
   try {
     // Race between fetch and timeout
-    const response = await Promise.race([
+    const response = (await Promise.race([
       fetch(url, config),
       timeoutPromise(API_CONFIG.timeout),
-    ]) as Response;
+    ])) as Response;
 
     // Handle HTTP errors
     if (!response.ok) {
@@ -68,33 +70,34 @@ export async function apiRequest<T = any>(
       try {
         errorData = await response.json();
       } catch (e) {
+        console.error("Error parsing error response:", e);
         errorData = { message: response.statusText };
       }
 
       throw new ApiError(
-        errorData.message || 'API request failed',
+        errorData.message || "API request failed",
         response.status,
         errorData
       );
     }
 
     // Parse response based on content type
-    const contentType = response.headers.get('Content-Type') || '';
-    
-    if (contentType.includes('application/json')) {
+    const contentType = response.headers.get("Content-Type") || "";
+
+    if (contentType.includes("application/json")) {
       return await response.json();
-    } else if (contentType.includes('text/')) {
-      return await response.text() as unknown as T;
+    } else if (contentType.includes("text/")) {
+      return (await response.text()) as unknown as T;
     } else {
-      return await response.blob() as unknown as T;
+      return (await response.blob()) as unknown as T;
     }
   } catch (error) {
     if (error instanceof ApiError) {
       throw error;
     }
-    
+
     throw new ApiError(
-      error instanceof Error ? error.message : 'Unknown error',
+      error instanceof Error ? error.message : "Unknown error",
       500
     );
   }
@@ -112,7 +115,7 @@ export function get<T = any>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     ...options,
-    method: 'GET',
+    method: "GET",
   });
 }
 
@@ -130,7 +133,7 @@ export function post<T = any>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     ...options,
-    method: 'POST',
+    method: "POST",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -149,7 +152,7 @@ export function put<T = any>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     ...options,
-    method: 'PUT',
+    method: "PUT",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -168,7 +171,7 @@ export function patch<T = any>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     ...options,
-    method: 'PATCH',
+    method: "PATCH",
     body: data ? JSON.stringify(data) : undefined,
   });
 }
@@ -185,7 +188,7 @@ export function del<T = any>(
 ): Promise<T> {
   return apiRequest<T>(endpoint, {
     ...options,
-    method: 'DELETE',
+    method: "DELETE",
   });
 }
 
