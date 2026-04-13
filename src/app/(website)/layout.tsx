@@ -1,14 +1,15 @@
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
-const layout = ({ children }: { children: React.ReactNode }) => {
+const WebsiteLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen">
       <Navbar />
-      {children}
+      <div className="flex-1 pt-20 md:pt-24">{children}</div>
       <Footer />
     </div>
   );
 };
 
-export default layout;
+export default WebsiteLayout;
+

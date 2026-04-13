@@ -1,4 +1,4 @@
-# Zasulehry Website Utilities Documentation
+# Next.js Template Utilities Documentation
 
 This document provides detailed information about the custom hooks, utilities, and library files available in this project. Use this as a reference for implementing common functionality across the website.
 

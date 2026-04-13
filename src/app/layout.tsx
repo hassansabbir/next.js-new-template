@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { constructMetadata } from "@/lib/metadata";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -9,20 +9,13 @@ const poppins = Poppins({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Zasulehry - Digital Solutions & Web Development",
-  description:
-    "We create exceptional digital experiences that help businesses grow and succeed in the modern world. Professional web development, design, and digital solutions.",
-  keywords:
-    "web development, digital solutions, UI/UX design, modern websites, business growth",
-  authors: [{ name: "Mahmud Hasan Sabbir" }],
-  openGraph: {
-    title: "Zasulehry - Digital Solutions & Web Development",
-    description:
-      "We create exceptional digital experiences that help businesses grow and succeed in the modern world.",
-    type: "website",
-  },
-};
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+export const metadata = constructMetadata();
 
 export default function RootLayout({
   children,
@@ -30,12 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${poppins.variable} font-poppins antialiased`}>
-        <div className="min-h-screen flex flex-col">
-          <main className="flex-1">{children}</main>
-        </div>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
+      <body
+        className={`${poppins.variable} ${inter.variable} font-sans antialiased min-h-screen flex flex-col`}
+        suppressHydrationWarning={true}
+      >
+        <main className="flex-1">{children}</main>
       </body>
     </html>
   );
 }
+
